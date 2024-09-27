@@ -9,14 +9,13 @@
 //#include <WiFiClient.h>
 //include <ESP8266WebServer.h >
 
-// llaves de autentificacion para cada dispositivo en la app BLYNK
+// Authentication Codes for each devices on BLYNK app
 //char auth[] = "xWlOcjiKAlA6Dm_fANZJELx9245M-_JR"; //SIPBI_1
 //char auth[] = "es5e073chuWMNetzMLdN4_vnqsvrU0R7"; //SIPBI_2
 char auth[] = "1Hj-1-2arabelCSn-pdlIUD5AmQs-FHq"; //SIPBI_3
 //char auth[] = "0XGtPW1QdTZjJRw_7qnmgdNnrqQ3d1bY"; //SIPBI_4
 //char auth[] = "zOApKi6rJrjzndiYGcQbV0g1iG5fQrbU"; //SIPBI_5
 //char auth[] = "u0WOXBhZLSzPYbinCeoCXOgxss90R5oL"; //SIPBI_6
-// variables que almacenan los valores de presion recibidas del Nano
 float presion1=0,presion2=0,presion3=0,presion4=0; 
 String hora;
 
@@ -24,8 +23,8 @@ BlynkTimer timer; // inicializacion del timer de Blynk
 
 void myTimerEvent()
 {
-  // Ojo: No enviar mas de 10 datos por segundo.
-  // Envio de datos al servidor Blynk
+  // Precaution: Don't send  than 10 data per second.
+  // send data to Blynk Server
     Blynk.virtualWrite(V1, presion1);
     Blynk.virtualWrite(V2, presion2);
     Blynk.virtualWrite(V3, presion3);
@@ -38,19 +37,19 @@ void setup() {
   Serial.begin(9600);
   openFS();
   serv_inicio();
-  //writecredencials("Lemos", "021"); //Descomentar para subir el codigo por primera vez
-  credenciales(); // Obtiene las credenciales de red WIFI guradadas en el sistema de archivos
-  verificacion(); // Verifica las credenciales guardadas e intenta conectarse a la RED
-  Blynk.config(auth); // Canfigura el sistema BLYNK con el respectivo auth
-  timer.setInterval(1000L, myTimerEvent); // defina el tiempo de espera del timer de BLYNK
+  //writecredencials("Lemos", "021"); //credentials
+  credenciales(); 
+  verificacion(); 
+  Blynk.config(auth); 
+  timer.setInterval(1000L, myTimerEvent); 
   
 }
 
 void loop() {
-/* solo se ejecuta BLYNK si hay conexion WIFI */
+/* only run BLYNK if there is WIFI conection */
 if(WiFi.status() == WL_CONNECTED){
- Blynk.run(); //inicializa Blink
- timer.run(); // Inicializa el BlynkTimer*/
+ Blynk.run(); 
+ timer.run(); 
 }
  if(est==true){
   verificacion();
@@ -59,7 +58,7 @@ if(WiFi.status() == WL_CONNECTED){
 }
 
 
-//Funcion que recibe los datos obtenidos del arduino nano
+//Function that receive data obtained by arduino nano
 void get_data(String cmd){
 
   String cmd1="", cmd2="", cmd3="", cmd4="";
@@ -80,14 +79,14 @@ void get_data(String cmd){
       /*Serial.println(cmd1);
       Serial.println(cmd2);
       Serial.println(cmd3);
-      Serial.println(cmd4); Depuracion  */
+      Serial.println(cmd4);  */
 
       presion1= cmd1.toFloat();
       presion2= cmd2.toFloat();
       presion3= cmd3.toFloat();
       presion4= cmd4.toFloat();
 
-      //copia los valores de presion alas variables de la libreria serv.h
+      //Copy the pressure values to variables of the library serv.h
       ser_presion1= presion1;
       ser_presion2= presion2;
       ser_presion3= presion3;

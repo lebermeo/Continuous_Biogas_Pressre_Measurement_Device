@@ -9,13 +9,13 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #endif
-#include "ESPAsyncWebServer.h" //Genera un servidor Asincronico
-#include "config_page.h"//Libreia que almacena las varibles String de las paginas HTML
+#include "ESPAsyncWebServer.h" //asynchronic server
+#include "config_page.h"
 #include "FS.h"
 
 
 void openFS(void){
- //Abre el sistema de archivos
+ //Opens file system
  if(!SPIFFS.begin()){
   Serial.println("\nError al abrir el sistema de archivos");
  } else {
@@ -80,8 +80,8 @@ void writereport(float data1,float data2,float data3,float data4,String fechah){
 }
 
 void writecredencials(String ssid, String pass) {
- //Abre el archivo para escribir ("w" write))
- //Sobreescribe el contenido del archivo
+ //Opens the file to write  ("w" write))
+ //over-write teh contents
  File rFile = SPIFFS.open("/credenciales.txt","w+");
  if(!rFile){
   Serial.println("Error al abrir archivo!");
@@ -96,13 +96,13 @@ void writecredencials(String ssid, String pass) {
 
 
 
-// credenciales del punto de acceso
+// credentials
 #ifndef APSSID
 #define APSSID "SIPBI_3"
 #define APPSK  "presion1234"
 #endif
 
-//Credenciales del punto de acceso del ESP01
+//Credentials of acces point of ESP01
 const char *ssid = APSSID;
 const char *password = APPSK;
 bool est=false;

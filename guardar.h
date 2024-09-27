@@ -4,20 +4,20 @@
 #include <RTClib.h>
 
 #define SSpin 10
-File archivo; //Objeto tipo archivo
-RTC_DS3231 rtc; //objeto RTC
+File archivo; //Objet file type
+RTC_DS3231 rtc; //objet RTC
 
-bool chek_rtc_sd= true; //varible indicadora de error en la inicializacion de la SD o RTC
+bool chek_rtc_sd= true; 
 
 void inicializacion(){
    chek_rtc_sd= true;
-  // inicializacion del modulolo RTC
+  // inicialization of the RTC module
    if (!rtc.begin()){
     Serial.println(F("Modulo RTC no encontrado"));
     chek_rtc_sd= false;
   }
    
-  //Inicializacion modulo SD
+  //Inicialization of SD module
     Serial.println(F("inicializacion.."));
   if(!SD.begin(SSpin)){
     Serial.println(F("Fallo en inicializacion"));
@@ -30,12 +30,11 @@ void inicializacion(){
 
 void registrar (String directorio,float presion)
 {
- DateTime fecha = rtc.now(); // Variable de fecha y horario
+ DateTime fecha = rtc.now(); 
 
  String fec = String(String(fecha.day()) + "-" + String(fecha.month()) + "-" + String(fecha.year()).substring(2,4) +  ".txt");
  //String fech = String(String(fecha.day()) + "/" + String(fecha.month()) + "/" + String(fecha.year()));
  
-//escritura de archivo
   Serial.println("inicio correcto");
   archivo = SD.open(String(directorio) , FILE_WRITE);
 
@@ -97,8 +96,7 @@ int obtener_segundos(){
 }
 
 String fecha_hora(){
-  // obtiene Fecha y Hora
-  DateTime fecha = rtc.now(); // Variable de fecha y horario
+  DateTime fecha = rtc.now();
   String fec = String(String(fecha.year()) + "/" + String(fecha.month()) + "/" + String(fecha.day())
                 + " " + String(fecha.hour())+ ":" + String(fecha.minute()));
   return fec;

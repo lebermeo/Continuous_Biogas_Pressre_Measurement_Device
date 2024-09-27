@@ -1,15 +1,10 @@
 //include "guardar.h"
 
-// Estas variables almacena si el sensor esta activo 
 bool a_sensor1= true,
      a_sensor2= true,
      a_sensor3= true,
      a_sensor4= true;
 
-
-/* Esta funcion se encarga de recibir las variable que almacenan los valores de los
- *  sensores, los convierte en un String y los envia al ESP-01 a travez del serial 
- */
 void set_data(float val, float val2, float val3, float val4){
   String cd = String("g/" + String(val) + "," + String(val2) + "," + String(val3) + "," + String(val4) + "/g");
  
@@ -17,18 +12,12 @@ void set_data(float val, float val2, float val3, float val4){
   //Serial.println(cd);  
 }
 
-/* Esta funcion recibe un String que contenga la fecha 
- *  obtenida del modulo RTC  y lo envia al ESP-01
- */
 void set_fechahora(String fechahora){
   String cd = String("h/" + String(fechahora)  + "/h");
   SerialBLE.println(cd);
   
 }
 
-/* Obtiene los datos de estado de activacion del Dispositivo
- * definida por el usuario a travez del panel de control
- */
 byte get_data(String cmd){
 
   /*static*/ byte dato;
@@ -50,15 +39,11 @@ byte get_data(String cmd){
  
 }
 
-/* Se obtienen los estados de activacion que son determinados por el
- * usuario para cada sensor
- */
 void get_datasensores(String cmd){
   
   /*static*/ byte dato;
   String cmd2="";
 
-  // Se verifica el tipo de informacion recibida comprobando el valor del inicio y final de linea
   if (cmd.substring(cmd.indexOf('/'),cmd.indexOf('/')+1)=="/"){
     if ((cmd.substring(cmd.lastIndexOf('/'),cmd.lastIndexOf('/')+1)=="/") && (cmd.lastIndexOf('/')>cmd.indexOf('/'))){
       cmd2= cmd.substring(cmd.indexOf('/')+1,cmd.lastIndexOf('/'));;
@@ -77,11 +62,6 @@ void get_datasensores(String cmd){
   }
 }
 
-/*Recibe los datos del puerto serial, comprueba el tipo de dato recibido y 
- * btiene los datos de fecha y hora establecida por el usuario a travez del panel de control,
- * estos datos son usados para ajustar y cambiar la fecha/hora del sistema del dispositivo
-*
- */
 void get_fecha(String cmd){
   
   Serial.print("PUERTO SERIE: ");

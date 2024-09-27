@@ -1,17 +1,17 @@
 
 
-#include <SoftwareSerial.h> //libreria para emular puertos seriales
+#include <SoftwareSerial.h> //library to emulate serial ports
 SoftwareSerial SerialBLE(5,6); // RX, TX
 
-#include "guardar.h" //almacena las variables y funciones para la escritura/lectura en la SD
-#include "set_get.h" //almacena las diferentes funciones de envio/recepcion de datos
+#include "guardar.h" //stores the variables and functions for writing/reading to SD
+#include "set_get.h" //stores the different send/receive data functions
 
 const int sp1= A0,sp2= A1,sp3= A2, sp4= A3, in_led = 4; 
 float presion1=0,presion2=0,presion3=0,presion4=0;
-byte sensor_act= 1; // Led indicador de actividad del dispositivo
+byte sensor_act= 1; // Led indicator of activity of the devices
 int hora=0, minutos=0,segundos=0 ;
 String fechahora ;
-//variable del filtro
+
   float pres_anterior[4], alpha = 0.005;
 
 void in_temp()
@@ -37,18 +37,17 @@ void setup()
   SerialBLE.begin(9600);
   pinMode(in_led,OUTPUT);
   digitalWrite(in_led,HIGH);//declaracion del led indicador del SD
-  inicializacion(); //inicializacion modulos RTC y SD
+  inicializacion(); //initialization of RTC and SD modules
 }
 
 void loop()
 {
-  //Esta fumcion se activa cuando recibe valores a travez del Serial
-  // por parte del Es-01
+  //This function is activated when it receives values through the serial port from the Esp-01
+  
   if(SerialBLE.available()> 0){
     serial();
    }
   
-    //escalamiento de la señal de voltage a presion (mbar)
     presion1 = lectura(analogRead(sp1),0);
     presion2 = lectura(analogRead(sp2),1);
     presion3 = lectura(analogRead(sp3),2);
@@ -59,40 +58,35 @@ void loop()
   //Serial.print((analogRead(sp1)/10));
   //Serial.println(",");
 
-  /*Verifica estado de funcionamiento y conexion de los modulos */
+  /*Verify the operating and connection status of the modules */
   /*if(!(segundos == obtener_segundos())){
     segundos = obtener_segundos();
     
-    if(chek_rtc_sd == false){             // Establece el led indicador en bajo en caso de
-      digitalWrite(in_led,LOW);           // error en la tarjeta SD o el modulo RTC    
+    if(chek_rtc_sd == false){             
+      digitalWrite(in_led,LOW);             
     }else{
-       if(sensor_act == 0){ //Condicion para la realizacion del guradado de datos
+       if(sensor_act == 0){ 
          Serial.println("Se detuvo");
          Serial.println(sensor_act);
-         digitalWrite(in_led,HIGH); //indica que el muestreado de los datos se ha detenido
+         digitalWrite(in_led,HIGH); 
        }else{
-          
-          // Control de led indicador de actividad de tarjeta SD
           digitalWrite(in_led, 1-digitalRead(in_led));   // toggle LED pin 
        }
     }
-     //Envio de datos al ESP- 01
      set_data(presion1,presion2,presion3,presion4); 
   }*/
 
-  /*Esta funcion obtiene la hora y fecha cada minuto y se envia por 
-  comunicacion serial al EsP-01 para mostrar en el panel de control*/
+  /*This function obtains the time and date every minute and sends it via serial communication to the EsP-01 for display on the control panel*/
   if(!(minutos == obtener_minutos())){
     fechahora = fecha_hora();
     minutos =obtener_minutos();
     set_fechahora(fechahora);  
     Serial.println("hora y fecha enviada");
   }
-  /*Verifica si la opcion de muestreo del equipo esta activa y 
-   * registra el valor de cada sensor cada hora
+  /*Verify whether the sampling option of the device is active and 
+   * record the value of each sensor every hour
    */
   if((chek_rtc_sd == true)){
-    //LLamado a la funcion registrar para el registro de datos en la tarjeta SD
     if(!(hora == obtener_hora())){
         hora= obtener_hora();
         if(a_sensor1== true){
@@ -111,17 +105,8 @@ void loop()
   }
   
 }
-
- /*Serial(): Recibe los datos entrantes por comunicacion serial y llama la funcion
-   segun el caso el cual es indicado por la variable flag(--> bandera)
-   caracter identificado del tipo de informacion que llega a traves de la 
-   comunicacion serial*/
     
 void serial(){
-  /*Esta funcion recibe los datos que llegan al puerto serial y de acuerdo a la variable flag
-   * realiza las funciones necesarias dependiendo el tipo de informacion que llegue, el cual 
-   * esta determinado por el valor que reciba "flag"
-   */
   String cmd="",flag="";
   cmd=SerialBLE.readStringUntil('\n');   
   flag= cmd.substring(0,1);
@@ -143,25 +128,21 @@ void serial(){
 ISR(TIMER1_COMPA_vect)          // timer compare interrupt service routine
 { 
   //Serial.println(sensor_act);
-    if(chek_rtc_sd == false){             // Establece el led indicador en bajo en caso de
-      digitalWrite(in_led,LOW);           // error en la tarjeta SD o el modulo RTC    
+    if(chek_rtc_sd == false){             
+      digitalWrite(in_led,LOW);              
     }else{
-       if(sensor_act == 0){ //Condicion para la realizacion del guradado de datos
+       if(sensor_act == 0){ 
          Serial.println("Se detuvo");
          Serial.println(sensor_act);
-         digitalWrite(in_led,HIGH); //indica que el muestreado de los datos se ha detenido
+         digitalWrite(in_led,HIGH); 
        }else{
-          
-          // Control de led indicador de actividad de tarjeta SD
           digitalWrite(in_led, 1-digitalRead(in_led));   // toggle LED pin 
        } 
   }
-  //Envio de datos al ESP- 01
    set_data(presion1,presion2,presion3,presion4); 
 }
 
-/*Funcion de lectura: Procesa las señales de 
-  voltaje y las escala a mbar */
+/*Read Function */
 float lectura(float lect,byte i){ 
   float pres;
   int lectpres;
@@ -175,7 +156,7 @@ float lectura(float lect,byte i){
   return lectpres;
 }
 
-//Funcion de filtro 
+//Filter Function
 float filtro(float pr,byte j){
   float presfil;
 
@@ -184,7 +165,7 @@ float filtro(float pr,byte j){
   return presfil;
 }
 
-//Funcion de calibracion
+//Calibration Function
 float calibracion(float pres){
   float prescal;
   

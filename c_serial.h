@@ -1,6 +1,4 @@
 
-// Envia el numero de sensores a activarse
-void set_data( byte n){
     Serial.print("b");
     Serial.print(n);
     Serial.println("b");
